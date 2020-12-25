@@ -65,7 +65,7 @@ subclass apu :: module
 subclass ppu :: module
 ... :: module
 
-class clock
+class machine
 	z80CPU* cpu
 	...
 	function tick() {
