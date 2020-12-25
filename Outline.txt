@@ -1,0 +1,89 @@
+Things to Emulate
+-----
+- CPU
+- PPU
+- APU
+
+How detailed is our emulation
+-----
+- Start with minimal emulation, then add more detail
+- Include
+	- Address bus, data bus
+	- Interface with other devices should remain the same
+	- State of the CPU (registers, flags) should be maintained
+- Exclude
+	- Ignore timing within machine cycle
+		- Like javidx9, lump all instructions into one clock cycle (even if they take longer in practice)
+
+CPU
+-----
+- Registers (General purpose and special purpose)
+	- Program Counter
+	- Accumulator
+	- Stack Pointer
+- Flags
+- System Bus
+- Pins
+
+Process of Emulation
+-----
+- CPU starts up --> 
+- Start assembly loaded into part of memory
+
+class dataBus
+	z80CPU* cpu
+	memory* mem
+	...
+	function connectToBus(z80CPU)
+	function connectToBus(module)
+
+class z80CPU
+	dataBus* bus
+	uint8_t accumulator
+	uint8_t stack_ptr
+	<represent registers - uint8_t>
+	<represent flags - enum>
+	...
+	int numCycles // counter for num cycles remaining for particular instructions
+	struct instruction { name, implementation, addressing mode, # cycles }
+	<represent a vector of instructions>
+	{
+		void ADD () { } // implement all instructions
+		...
+	}
+	function executeCycle()
+
+class module
+	contains an addressable range
+	bool acceptsInput
+	bool acceptsOutput
+	function executeCycle()
+
+class memory :: module
+	dataBus* bus
+subclass apu :: module
+subclass ppu :: module
+... :: module
+
+class clock
+	z80CPU* cpu
+	...
+	function tick() {
+		cpu->executeCycle();
+		...
+	}
+
+main() {
+	//make a data bus
+	//make the cpu
+	//make the memory
+	//make other peripherals
+	//connect all together
+	//make the clock
+	//connect clock to everything
+
+	//load instructions into memory
+	while (true)
+		when user presses Enter
+			clock.tick()
+}
