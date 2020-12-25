@@ -39,9 +39,9 @@ class dataBus
 
 class z80CPU
 	dataBus* bus
-	uint8_t accumulator
-	uint8_t stack_ptr
 	<represent registers - uint8_t>
+			uint8_t accumulator
+		uint8_t stack_ptr
 	<represent flags - enum>
 	...
 	int numCycles // counter for num cycles remaining for particular instructions

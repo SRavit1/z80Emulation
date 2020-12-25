@@ -1,0 +1,84 @@
+In file included from emulate.cpp:1:0:
+z80CPU.h:21:2: error: ‘FLAG8’ does not name a type
+  FLAG8 F, F_; // Flag registers
+  ^~~~~
+emulate.cpp: In function ‘int main()’:
+emulate.cpp:12:51: error: no matching function for call to ‘machine::machine(z80CPU (*)(), memory (*)(), dataBus (*)())’
+  machine* myMachine = new machine(&cpu, &mem, &bus);
+                                                   ^
+In file included from emulate.cpp:5:0:
+machine.h:24:2: note: candidate: machine::machine(z80CPU*, memory*, dataBus*)
+  machine(z80CPU* cpu, memory* mem, dataBus* bus);
+  ^~~~~~~
+machine.h:24:2: note:   no known conversion for argument 1 from ‘z80CPU (*)()’ to ‘z80CPU*’
+machine.h:18:7: note: candidate: constexpr machine::machine(const machine&)
+ class machine {
+       ^~~~~~~
+machine.h:18:7: note:   candidate expects 1 argument, 3 provided
+machine.h:18:7: note: candidate: constexpr machine::machine(machine&&)
+machine.h:18:7: note:   candidate expects 1 argument, 3 provided
+z80CPU.cpp:1:10: fatal error: z80CPU: No such file or directory
+ #include "z80CPU"
+          ^~~~~~~~
+compilation terminated.
+In file included from dataBus.h:3:0,
+                 from dataBus.cpp:1:
+z80CPU.h:21:2: error: ‘FLAG8’ does not name a type
+  FLAG8 F, F_; // Flag registers
+  ^~~~~
+z80CPU.h:27:2: error: ‘dataBus’ does not name a type
+  dataBus* bus;
+  ^~~~~~~
+z80CPU.h:30:17: error: ‘dataBus’ has not been declared
+  void assignBus(dataBus* bus);
+                 ^~~~~~~
+dataBus.cpp: In member function ‘void dataBus::connectToBus(z80CPU*)’:
+dataBus.cpp:9:21: error: no matching function for call to ‘z80CPU::assignBus(dataBus*)’
+  cpu->assignBus(this);
+                     ^
+In file included from dataBus.h:3:0,
+                 from dataBus.cpp:1:
+z80CPU.h:30:7: note: candidate: void z80CPU::assignBus(int*)
+  void assignBus(dataBus* bus);
+       ^~~~~~~~~
+z80CPU.h:30:7: note:   no known conversion for argument 1 from ‘dataBus*’ to ‘int*’
+dataBus.cpp: In member function ‘void dataBus::connectToBus(module*)’:
+dataBus.cpp:20:1: error: expected ‘;’ before ‘}’ token
+ }
+ ^
+In file included from machine.h:3:0,
+                 from machine.cpp:1:
+z80CPU.h:21:2: error: ‘FLAG8’ does not name a type
+  FLAG8 F, F_; // Flag registers
+  ^~~~~
+In file included from dataBus.h:3:0,
+                 from module.h:3,
+                 from memory.h:3,
+                 from memory.cpp:1:
+z80CPU.h:21:2: error: ‘FLAG8’ does not name a type
+  FLAG8 F, F_; // Flag registers
+  ^~~~~
+z80CPU.h:27:2: error: ‘dataBus’ does not name a type
+  dataBus* bus;
+  ^~~~~~~
+z80CPU.h:30:17: error: ‘dataBus’ has not been declared
+  void assignBus(dataBus* bus);
+                 ^~~~~~~
+In file included from module.h:3:0,
+                 from memory.h:3,
+                 from memory.cpp:1:
+dataBus.h:23:2: error: ‘memory’ does not name a type
+  memory* mem;
+  ^~~~~~
+dataBus.h:31:20: error: ‘memory’ has not been declared
+  void connectToBus(memory* mem);
+                    ^~~~~~
+dataBus.h:32:20: error: ‘module’ has not been declared
+  void connectToBus(module* mod);
+                    ^~~~~~
+dataBus.h:32:7: error: ‘void dataBus::connectToBus(int*)’ cannot be overloaded
+  void connectToBus(module* mod);
+       ^~~~~~~~~~~~
+dataBus.h:31:7: error: with ‘void dataBus::connectToBus(int*)’
+  void connectToBus(memory* mem);
+       ^~~~~~~~~~~~
