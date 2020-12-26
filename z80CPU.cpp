@@ -5,7 +5,7 @@ z80CPU::z80CPU() {
 }
 
 void z80CPU::assignBus(dataBus* bus) {
-	this->bus = bus;
+	m_bus = bus;
 }
 
 void z80CPU::reset() {

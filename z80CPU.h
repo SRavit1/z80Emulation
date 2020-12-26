@@ -6,8 +6,8 @@
 	typedef uint8_t REG8;
 	typedef uint16_t REG16;
 	typedef struct range {
-		REG16 lower;
-		REG16 upper;
+		uint16_t lower;
+		uint16_t upper;
 	} addressableRange;
 	typedef struct {
 		unsigned int C : 1;
@@ -34,7 +34,7 @@ public:
 	REG8 I, R; //interrupt vector, memory refresh
 	REG16 IX, IY, SP, PC; //index registers, stack pointer, program counter
 
-	dataBus* bus;
+	dataBus* m_bus;
 
 	z80CPU();
 	void assignBus(dataBus* bus);

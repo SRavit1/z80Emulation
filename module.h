@@ -6,8 +6,8 @@
 	typedef uint8_t REG8;
 	typedef uint16_t REG16;
 	typedef struct range {
-		REG16 lower;
-		REG16 upper;
+		uint16_t lower;
+		uint16_t upper;
 	} addressableRange;
 	typedef struct {
 		unsigned int C : 1;
@@ -32,7 +32,7 @@ public:
 
 	module(REG16 lower, REG16 upper, bool input, bool output);
 
-	dataBus* bus;
+	dataBus* m_bus;
 	void assignBus(dataBus* bus);
 
 	void executeCycle(); //goes through one clock cycle

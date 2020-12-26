@@ -10,8 +10,8 @@
 	typedef uint8_t REG8;
 	typedef uint16_t REG16;
 	typedef struct range {
-		REG16 lower;
-		REG16 upper;
+		uint16_t lower;
+		uint16_t upper;
 	} addressableRange;
 	typedef struct {
 		unsigned int C : 1;
@@ -31,15 +31,24 @@ class module;
 
 class dataBus {
 public:
-	z80CPU* cpu;
-	memory* mem;
+	z80CPU* m_cpu;
+	memory* m_mem;
 
 	//vector of peripheral devices
 	//vector <module*> devices;
 
 	dataBus();
 
+	uint8_t readData();
+	void writeData(uint8_t data);
+
+	uint16_t readAddress();
+	void writeAddress(uint16_t address);
+
 	void connectToBus(z80CPU* cpu);
 	void connectToBus(memory* mem);
 	void connectToBus(module* mod);
+private:
+	uint8_t  data_lines; //represent the data lines of the data bus
+	uint16_t addr_lines; //represent the address lines of the data bus
 };

@@ -10,8 +10,8 @@
 	typedef uint8_t REG8;
 	typedef uint16_t REG16;
 	typedef struct range {
-		REG16 lower;
-		REG16 upper;
+		uint16_t lower;
+		uint16_t upper;
 	} addressableRange;
 	typedef struct {
 		unsigned int C : 1;
@@ -27,9 +27,9 @@
 
 class machine {
 public:
-	z80CPU* cpu;
-	memory* mem;
-	dataBus* bus;
+	z80CPU* m_cpu;
+	memory* m_mem;
+	dataBus* m_bus;
 
 	machine(z80CPU* cpu, memory* mem, dataBus* bus);
 

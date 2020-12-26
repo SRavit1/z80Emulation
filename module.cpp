@@ -8,7 +8,7 @@ module::module(REG16 lower, REG16 upper, bool input, bool output)
 }
 
 void module::assignBus(dataBus* bus) {
-	this->bus = bus;
+	m_bus = bus;
 }
 
 void module::executeCycle() {
