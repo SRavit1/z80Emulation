@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/a.exe.dir/src/emulate.cpp.o CMakeFiles/a.exe.dir/src/z80CPU.cpp.o CMakeFiles/a.exe.dir/src/dataBus.cpp.o CMakeFiles/a.exe.dir/src/machine.cpp.o CMakeFiles/a.exe.dir/src/module.cpp.o CMakeFiles/a.exe.dir/src/memory.cpp.o -o a.exe 

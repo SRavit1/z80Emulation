@@ -1,0 +1,3 @@
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/CMakeFiles/rebuild_cache.dir
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/CMakeFiles/edit_cache.dir
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/CMakeFiles/a.exe.dir
