@@ -6,11 +6,27 @@
 
 #IncludeRegexTransform: 
 
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/dataBus.cpp
+dataBus.h
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/dataBus.h
+
 /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/emulate.cpp
 iostream
 -
 machine.h
 /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/machine.h
+
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/machine.cpp
+machine.h
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/machine.h
+
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/z80CPU.cpp
+z80CPU.h
+/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/z80CPU.h
+
+include/OpCode.h
+string
+-
 
 include/dataBus.h
 z80CPU.h
@@ -45,6 +61,10 @@ stdint.h
 -
 
 include/z80CPU.h
+vector
+-
+OpCode.h
+include/OpCode.h
 stdint.h
 -
 

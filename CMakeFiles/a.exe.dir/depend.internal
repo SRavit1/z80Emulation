@@ -3,12 +3,14 @@
 
 CMakeFiles/a.exe.dir/src/dataBus.cpp.o
  /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/dataBus.cpp
+ include/OpCode.h
  include/dataBus.h
  include/memory.h
  include/module.h
  include/z80CPU.h
 CMakeFiles/a.exe.dir/src/emulate.cpp.o
  /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/emulate.cpp
+ include/OpCode.h
  include/dataBus.h
  include/machine.h
  include/memory.h
@@ -16,6 +18,7 @@ CMakeFiles/a.exe.dir/src/emulate.cpp.o
  include/z80CPU.h
 CMakeFiles/a.exe.dir/src/machine.cpp.o
  /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/machine.cpp
+ include/OpCode.h
  include/dataBus.h
  include/machine.h
  include/memory.h
@@ -30,4 +33,5 @@ CMakeFiles/a.exe.dir/src/module.cpp.o
  include/module.h
 CMakeFiles/a.exe.dir/src/z80CPU.cpp.o
  /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/z80CPU.cpp
+ include/OpCode.h
  include/z80CPU.h
