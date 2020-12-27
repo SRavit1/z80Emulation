@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include "OpCode.h"
 
 #ifndef REG_H
 	#define REG_H
@@ -46,4 +48,11 @@ public:
 	void executeCycle(); //goes through one clock cycle
 private:
 	int nCycles; //number of cycles remaining for current instruction
+	//NOP and IMP are dummy functions to be replaced with the instruction/address mode functions
+	uint8_t NOP();
+	uint8_t IMP();
+
+	std::vector <OpCode> lookUpTable = {
+		{ "???", &NOP, &IMP, 2 }, 
+	}
 };
