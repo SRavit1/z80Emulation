@@ -20,15 +20,12 @@ void dataBus::writeAddress(uint16_t address) {
 
 void dataBus::connectToBus(z80CPU* cpu) {
 	m_cpu = cpu;
-	m_cpu->assignBus(this);
 }
 
 void dataBus::connectToBus(memory* mem) {
 	m_mem = mem;
-	m_cpu->assignBus(this);
 }
 
 void dataBus::connectToBus(module* mod) {
 	//TODO: Add to bus
-	mod->assignBus(this);
 }

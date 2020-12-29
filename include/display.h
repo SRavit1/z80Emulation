@@ -4,6 +4,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include "types.h"
+
 //TODO: Add to separate file display.h
 //TODO: Add displays for CPU registers/flags
 //TODO: Add display for disassembled instructions in memory

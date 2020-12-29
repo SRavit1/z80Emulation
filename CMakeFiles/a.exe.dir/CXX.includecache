@@ -6,65 +6,71 @@
 
 #IncludeRegexTransform: 
 
-/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/dataBus.cpp
-dataBus.h
-/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/dataBus.h
-
 /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/emulate.cpp
 iostream
 -
 machine.h
 /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/machine.h
 
-/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/machine.cpp
-machine.h
-/home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/machine.h
-
 /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/z80CPU.cpp
+iostream
+-
+iomanip
+-
 z80CPU.h
 /home/ravit/Documents/emulatorProject/Z80/z80Emulation/src/z80CPU.h
 
 include/OpCode.h
 string
 -
+types.h
+include/types.h
 
 include/dataBus.h
+types.h
+include/types.h
 z80CPU.h
 include/z80CPU.h
 module.h
 include/module.h
 memory.h
 include/memory.h
-stdint.h
--
 
 include/machine.h
+types.h
+include/types.h
 z80CPU.h
 include/z80CPU.h
 memory.h
 include/memory.h
 dataBus.h
 include/dataBus.h
-stdint.h
--
 
 include/memory.h
-module.h
-include/module.h
 vector
 -
-stdint.h
--
+types.h
+include/types.h
+module.h
+include/module.h
 
 include/module.h
+types.h
+include/types.h
+
+include/types.h
 stdint.h
 -
 
 include/z80CPU.h
 vector
 -
+types.h
+include/types.h
+dataBus.h
+include/dataBus.h
+memory.h
+include/memory.h
 OpCode.h
 include/OpCode.h
-stdint.h
--
 

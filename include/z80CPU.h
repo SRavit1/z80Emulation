@@ -1,30 +1,13 @@
 #pragma once
 
 #include <vector>
+
+#include "types.h"
+#include "dataBus.h"
+#include "memory.h"
 #include "OpCode.h"
 
-#ifndef REG_H
-	#define REG_H
-	#include <stdint.h>
-	typedef uint8_t REG8;
-	typedef uint16_t REG16;
-	typedef struct range {
-		uint16_t lower;
-		uint16_t upper;
-	} addressableRange;
-	typedef struct {
-		unsigned int C : 1;
-		unsigned int N : 1;
-		unsigned int P_V : 1;
-		unsigned int X1 : 1;
-		unsigned int H : 1;
-		unsigned int X2 : 1;
-		unsigned int Z : 1;
-		unsigned int S : 1;
-	} FLAG8;
-#endif
-
-class dataBus;
+//class dataBus;
 
 class z80CPU {
 public:
@@ -37,6 +20,11 @@ public:
 	REG8 I, R; //interrupt vector, memory refresh
 	REG16 IX, IY, SP, PC; //index registers, stack pointer, program counter
 
+	enum iff {IFF_RESET, IFF_ENABLE};
+	iff iff1, iff2; //Interrupt-enable flip flop; whether the CPU will accept an interrupt
+
+	enum {MODE0, MODE1, MODE2} interrupt_status;
+
 	dataBus* m_bus;
 
 	z80CPU();
@@ -48,15 +36,26 @@ public:
 
 	void executeCycle(); //goes through one clock cycle
 private:
-	int nCycles; //number of cycles remaining for current instruction
+	int nCycles; //helper variable; number of cycles remaining for current instruction
+
+	uint8_t fetched; //helper variable; store fetched instruction from memory
+
+	bool nextInst; //helper variable; indicates whether program counter should be incremented at end of instruction
+	uint8_t operand1, operand2; //helper variable; used to obtain operands of OpCodes
+
+	std::vector <OpCode> lookUpTable; //helper variable; stores vector of OpCodes
+	
+	uint8_t memReadPC(); //reads memory at PC
+
+	//Inline functions set and reset flags
+	void SET_FLAG(FLAG a) { a = FLAG_SET; }
+	void RESET_FLAG(FLAG a) { a = FLAG_RESET; }
 	
 	//NOP and IMP are dummy functions to be replaced with the instruction/address mode functions
-	
 	//ADDRESS MODE IMPLEMENTATIONS
-	uint8_t IMP();
+	uint8_t IMP();  uint8_t IMM();  
 	
-	//INSTRUCTIONS IMPLEMENTATIONS
-	uint8_t NOP();
-
-	std::vector <OpCode> lookUpTable;
+	//INSTRUCTIONS IMPLEMENTATIONS (ALPHABETICAL)
+	uint8_t NOP(); 
+	uint8_t DJNZ(); uint8_t INCA(); uint8_t LDAN(); uint8_t LDBN(); 
 };
