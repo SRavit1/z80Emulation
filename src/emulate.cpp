@@ -17,14 +17,14 @@ int main() {
 	DNJZ loop
 	*/
 
-	//LD A, 3
-	mem.write(0x0000, 0x3e); //LDAN Op Code
+	//LD C, 3
+	mem.write(0x0000, 0x0e); //LDCN Op Code
 	mem.write(0x0001, 0x00); //Operand for above op code
 	//LD B, 3
 	mem.write(0x0002, 0x06); //LDBN Op Code
 	mem.write(0x0003, 0x03); //Operand for above op code
-	//INC A
-	mem.write(0x0004, 0x3C); //INCA Op Code
+	//INC C
+	mem.write(0x0004, 0x0C); //INCC Op Code
 	//DNJZ -2
 	mem.write(0x0005, 0x10); //DJNZ Op Code
 	mem.write(0x0006, 0xFD); //Operand for above op Code

@@ -57,5 +57,5 @@ private:
 	
 	//INSTRUCTIONS IMPLEMENTATIONS (ALPHABETICAL)
 	uint8_t NOP(); 
-	uint8_t DJNZ(); uint8_t INCA(); uint8_t LDAN(); uint8_t LDBN(); 
+	uint8_t DJNZ(); uint8_t INCA(); uint8_t INCC(); uint8_t LDAN(); uint8_t LDBN(); uint8_t LDCN();
 };

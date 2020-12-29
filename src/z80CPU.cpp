@@ -9,7 +9,7 @@ z80CPU::z80CPU() {
 	OpCode NOP_INST						 = { "???", &a::NOP, &a::IMP, 2 };
 	lookUpTable = {
 		//0									1								2								3								4								5								6								7								8								9								A								B								C								D								E								F
-/*0*/	{"???", &a::NOP, &a::IMP, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDBN", &a::LDBN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
+/*0*/	{"???", &a::NOP, &a::IMP, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDBN", &a::LDBN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCC", &a::INCC, &a::IMP, 1}						, NOP_INST						, {"LDCN", &a::LDCN, &a::IMM, 2}, NOP_INST						,
 /*1*/	{"DJNZ", &a::DJNZ, &a::IMM, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
 /*2*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
 /*3*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCA", &a::INCA, &a::IMP, 1}, NOP_INST						, {"LDAN", &a::LDAN, &a::IMM, 2}, NOP_INST						,
@@ -113,6 +113,12 @@ uint8_t z80CPU::LDBN() {
 	B = operand1;
 }
 
+uint8_t z80CPU::LDCN() {
+	std::cout << "LDCN instruction called with " << 
+		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
+	C = operand1;
+}
+
 uint8_t z80CPU::INCA() {
 	std::cout << "INCA instruction called" << std::endl;
 	
@@ -128,6 +134,23 @@ uint8_t z80CPU::INCA() {
 	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
 	if ((A & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
 }
+
+uint8_t z80CPU::INCC() {
+	std::cout << "INCC instruction called" << std::endl;
+	
+	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
+	if (C == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
+	
+	C++;
+	
+	//S is set if result is negative; otherwise, it is reset.
+	if (C < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
+	//Z is set if result is 0; otherwise, it is reset.
+	if (C == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
+	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
+	if ((C & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+}
+
 
 uint8_t z80CPU::DJNZ() {
 	std::cout << "DJNZ instruction called with " << 
