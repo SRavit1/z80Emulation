@@ -9,9 +9,9 @@ z80CPU::z80CPU() {
 	OpCode NOP_INST						 = { "???", &a::NOP, &a::IMP, 2 };
 	lookUpTable = {
 		//0									1								2								3								4								5								6								7								8								9								A								B								C								D								E								F
-/*0*/	{"???", &a::NOP, &a::IMP, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDBN", &a::LDBN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCC", &a::INCC, &a::IMP, 1}						, NOP_INST						, {"LDCN", &a::LDCN, &a::IMM, 2}, NOP_INST						,
-/*1*/	{"DJNZ", &a::DJNZ, &a::IMM, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
-/*2*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
+/*0*/	{"???", &a::NOP, &a::IMP, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDBN", &a::LDBN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCC", &a::INCC, &a::IMP, 1}, NOP_INST						, {"LDCN", &a::LDCN, &a::IMM, 2}, NOP_INST						,
+/*1*/	{"DJNZ", &a::DJNZ, &a::IMM, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDDN", &a::LDDN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDEN", &a::LDEN, &a::IMM, 2}, NOP_INST						,
+/*2*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDHN", &a::LDHN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDLN", &a::LDLN, &a::IMM, 2}, NOP_INST						,
 /*3*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCA", &a::INCA, &a::IMP, 1}, NOP_INST						, {"LDAN", &a::LDAN, &a::IMM, 2}, NOP_INST						,
 /*4*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
 /*5*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
@@ -117,6 +117,30 @@ uint8_t z80CPU::LDCN() {
 	std::cout << "LDCN instruction called with " << 
 		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
 	C = operand1;
+}
+
+uint8_t z80CPU::LDDN() {
+	std::cout << "LDDN instruction called with " << 
+		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
+	D = operand1;
+}
+
+uint8_t z80CPU::LDEN() {
+	std::cout << "LDEN instruction called with " << 
+		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
+	E = operand1;
+}
+
+uint8_t z80CPU::LDHN() {
+	std::cout << "LDHN instruction called with " << 
+		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
+	H = operand1;
+}
+
+uint8_t z80CPU::LDLN() {
+	std::cout << "LDLN instruction called with " << 
+		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
+	L = operand1;
 }
 
 uint8_t z80CPU::INCA() {
