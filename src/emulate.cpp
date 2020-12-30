@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "machine.h"
+#include "display.h"
 
 int main() {
 	z80CPU cpu;
@@ -10,26 +11,36 @@ int main() {
 	machine* myMachine = new machine(&cpu, &mem, &bus);
 
 	/*
-	LD A, 0
+	LD C, 0
 	LD B, 3
 	loop:
-	INC A
+	INC C
 	DNJZ loop
 	*/
 
-	//LD C, 3
-	mem.write(0x0000, 0x0e); //LDCN Op Code
-	mem.write(0x0001, 0x00); //Operand for above op code
-	//LD B, 3
-	mem.write(0x0002, 0x06); //LDBN Op Code
-	mem.write(0x0003, 0x03); //Operand for above op code
-	//INC C
-	mem.write(0x0004, 0x0C); //INCC Op Code
-	//DNJZ -2
-	mem.write(0x0005, 0x10); //DJNZ Op Code
-	mem.write(0x0006, 0xFD); //Operand for above op Code
+	/*
+	0E LDCN Op Code
+	00 Operand for above op code
+	06 LDBN Op Code
+	03 Operand for above op code
+	0C INCC Op Code
+	10 DJNZ Op Code
+	FD Operand for above op Code
+	*/
 
-	for (int i = 0; i < 25; i++) {
+	REG16 loc = 0x0010;
+	mem.write(loc, "0E 00 06 03 0C 10 FD");
+
+	//TODO: Substitute both statements with cpu.change
+	//(PC would be incremented automatically)
+	cpu.PC = loc;
+	cpu.fetchDecode();
+
+	for (int i = 1; ; i++) {
 		myMachine->tick();
+		if (cpu.nCycles == 0) { //current instruction is executing
+			printState(cpu, mem);
+			obtainCommand();
+		}
 	}
 }

@@ -20,6 +20,12 @@ public:
 	REG8 I, R; //interrupt vector, memory refresh
 	REG16 IX, IY, SP, PC; //index registers, stack pointer, program counter
 
+	enum REG8_vals {_acc , _A,  _B,  _D,  _H,  _F,  _C,  _E,  _L, 
+					_acc_, _A_, _B_, _D_, _H_, _F_, _C_, _E_, _L_,
+					_I, _R};
+	enum REG16_vals {_IX, _IY, _SP, _PC};
+	enum FLAG8_vals {_FL, _FL_};
+
 	enum iff {IFF_RESET, IFF_ENABLE};
 	iff iff1, iff2; //Interrupt-enable flip flop; whether the CPU will accept an interrupt
 
@@ -34,14 +40,27 @@ public:
 	void INT_(); //interrupt
 	void NMI(); //non-maskable interrupt
 
+	void fetchDecode(); //fetches opcode and loads operands
 	void executeCycle(); //goes through one clock cycle
-private:
-	int nCycles; //helper variable; number of cycles remaining for current instruction
 
+	//TODO: Implement these functions and make all registers/flags private
+	//TODO: If PC is changed, be sure to call fetchDecode
+	REG8  access(REG8_vals);
+	REG16 access(REG16_vals);
+	FLAG8 access(FLAG8_vals);
+
+	void change (REG8_vals, REG8&);
+	void change (REG16_vals, REG16&);
+	void change (FLAG8_vals, FLAG8&);
+
+	OpCode* currInst; //helper variable; stores a reference to the current instruction
+	uint8_t operand1, operand2; //helper variable; used to obtain operands of OpCodes
+
+	int nCycles; //helper variable; number of cycles remaining for current instruction
+private:
 	uint8_t fetched; //helper variable; store fetched instruction from memory
 
 	bool nextInst; //helper variable; indicates whether program counter should be incremented at end of instruction
-	uint8_t operand1, operand2; //helper variable; used to obtain operands of OpCodes
 
 	std::vector <OpCode> lookUpTable; //helper variable; stores vector of OpCodes
 	

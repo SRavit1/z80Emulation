@@ -8,5 +8,5 @@ int main() {
 		memory.push_back(i);
 	}
 
-	printMemory(memory);
+	printMemory(memory, 0, 256);
 }

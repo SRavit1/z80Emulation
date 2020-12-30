@@ -6,10 +6,10 @@
 z80CPU::z80CPU() {
 	//Preparing the lookup table
 	using a = z80CPU;
-	OpCode NOP_INST						 = { "???", &a::NOP, &a::IMP, 2 };
+	OpCode NOP_INST = { "NOP", &a::NOP, &a::IMP, 2 };
 	lookUpTable = {
 		//0									1								2								3								4								5								6								7								8								9								A								B								C								D								E								F
-/*0*/	{"???", &a::NOP, &a::IMP, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDBN", &a::LDBN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCC", &a::INCC, &a::IMP, 1}, NOP_INST						, {"LDCN", &a::LDCN, &a::IMM, 2}, NOP_INST						,
+/*0*/	{"NOP", &a::NOP, &a::IMP, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDBN", &a::LDBN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCC", &a::INCC, &a::IMP, 1}, NOP_INST						, {"LDCN", &a::LDCN, &a::IMM, 2}, NOP_INST						,
 /*1*/	{"DJNZ", &a::DJNZ, &a::IMM, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, {"INCD", &a::INCD, &a::IMP, 1}, NOP_INST						, {"LDDN", &a::LDDN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDEN", &a::LDEN, &a::IMM, 2}, NOP_INST						,
 /*2*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDHN", &a::LDHN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDLN", &a::LDLN, &a::IMM, 2}, NOP_INST						,
 /*3*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCA", &a::INCA, &a::IMP, 1}, NOP_INST						, {"LDAN", &a::LDAN, &a::IMM, 2}, NOP_INST						,
@@ -27,11 +27,19 @@ z80CPU::z80CPU() {
 /*F*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						
 	};
 
+	currInst = nullptr;
 	//setting number of cycles to 0
 	nCycles = 0;
 
 	//Resetting the CPU
 	reset();
+
+	/*
+	The idea here is to perform a half-cycle, where the instruction is fetched,
+	but no instruction is executed before the fetch, nor is the program counter
+	incremented.
+	*/
+	fetchDecode();
 }
 
 void z80CPU::assignBus(dataBus* bus) {
@@ -59,31 +67,39 @@ void z80CPU::NMI() { //non-maskable interrupt
 
 }
 
+void z80CPU::fetchDecode() {
+	//Op Code Fetch Cycle
+	fetched = memReadPC();
+
+	//Decoding the Op Code
+	currInst = &lookUpTable[fetched];
+	//can be modified from within instruction if it depends on operands (e.g. DJNZ)
+	nCycles = currInst->cycles;
+	nextInst = true; //set to false in operate() if jump group instruction
+
+	//Instruction execution cycle
+	//Note: As of now, the return value of these functions is not used
+	(this->*(currInst->addrmode))();
+}
+
 void z80CPU::executeCycle() {
 	if (nCycles == 0) {
-		//Op Code Fetch Cycle
-		fetched = memReadPC();
-
-		//Decoding the Op Code
-		OpCode& inst = lookUpTable[fetched];
-		//can be modified from within instruction if it depends on operands (e.g. DJNZ)
-		nCycles = inst.cycles;
-		nextInst = true; //set to false in operate() if jump group instruction
-
-		//Instruction execution cycle
-		//Note: As of now, the return value of these functions is not used
-		(this->*(inst.addrmode))();
-		(this->*(inst.operate))();
+		(this->*(currInst->operate))();
 
 		//Increment program counter by default
 		if (nextInst) PC++;
+
+		//Fetching the next instruction so it can be displayed before the next cycle
+		fetchDecode();
 	}
 
 	nCycles--;
 }
 
 uint8_t z80CPU::memReadPC() {
-	return m_bus->m_mem->read(PC);
+	uint8_t result = 0;
+	m_bus->m_mem->read(PC, result);
+	return result;
 }
 
 //IMPLEMENTATION OF ADDRESS MODES
@@ -98,54 +114,38 @@ uint8_t z80CPU::IMM() {
 
 //IMPLEMENTATION OF INSTRUCTION FUNCTIONS
 uint8_t z80CPU::NOP() {
-	std::cout << "NOP instruction called" << std::endl;
+
 }
 
 uint8_t z80CPU::LDAN() {
-	std::cout << "LDAN instruction called with " << 
-		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
 	A = operand1;
 }
 
 uint8_t z80CPU::LDBN() {
-	std::cout << "LDBN instruction called with " << 
-		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
 	B = operand1;
 }
 
 uint8_t z80CPU::LDCN() {
-	std::cout << "LDCN instruction called with " << 
-		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
 	C = operand1;
 }
 
 uint8_t z80CPU::LDDN() {
-	std::cout << "LDDN instruction called with " << 
-		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
 	D = operand1;
 }
 
 uint8_t z80CPU::LDEN() {
-	std::cout << "LDEN instruction called with " << 
-		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
 	E = operand1;
 }
 
 uint8_t z80CPU::LDHN() {
-	std::cout << "LDHN instruction called with " << 
-		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
 	H = operand1;
 }
 
 uint8_t z80CPU::LDLN() {
-	std::cout << "LDLN instruction called with " << 
-		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;;
 	L = operand1;
 }
 
 uint8_t z80CPU::INCA() {
-	std::cout << "INCA instruction called" << std::endl;
-	
 	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
 	if (A == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
 	
@@ -160,8 +160,6 @@ uint8_t z80CPU::INCA() {
 }
 
 uint8_t z80CPU::INCC() {
-	std::cout << "INCC instruction called" << std::endl;
-	
 	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
 	if (C == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
 	
@@ -176,8 +174,6 @@ uint8_t z80CPU::INCC() {
 }
 
 uint8_t z80CPU::INCD() {
-	std::cout << "INCC instruction called" << std::endl;
-	
 	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
 	if (D == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
 	D++;
@@ -192,14 +188,11 @@ uint8_t z80CPU::INCD() {
 
 
 uint8_t z80CPU::DJNZ() {
-	std::cout << "DJNZ instruction called with " << 
-		std::hex << std::uppercase << static_cast<int>(operand1) << std::endl;
-
 	B--;
 
 	if (B != 0x00) {
 		// program counter is incremented once more after this instruction in executeCycle()
-		PC += (operand1);
+		PC += (int8_t) operand1;
 		// if B is not 0, 3 cycles are taken rather than 2
 		nCycles++;
 	}
