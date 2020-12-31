@@ -9,9 +9,9 @@ z80CPU::z80CPU() {
 	OpCode NOP_INST = { "NOP", &a::NOP, &a::IMP, 2 };
 	lookUpTable = {
 		//0									1								2								3								4								5								6								7								8								9								A								B								C								D								E								F
-/*0*/	{"NOP", &a::NOP, &a::IMP, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDBN", &a::LDBN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCC", &a::INCC, &a::IMP, 1}, NOP_INST						, {"LDCN", &a::LDCN, &a::IMM, 2}, NOP_INST						,
+/*0*/	{"NOP", &a::NOP, &a::IMP, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, {"INCB", &a::INCB, &a::IMP, 1}, NOP_INST						, {"LDBN", &a::LDBN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCC", &a::INCC, &a::IMP, 1}, NOP_INST						, {"LDCN", &a::LDCN, &a::IMM, 2}, NOP_INST						,
 /*1*/	{"DJNZ", &a::DJNZ, &a::IMM, 2}	, NOP_INST						, NOP_INST						, NOP_INST						, {"INCD", &a::INCD, &a::IMP, 1}, NOP_INST						, {"LDDN", &a::LDDN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDEN", &a::LDEN, &a::IMM, 2}, NOP_INST						,
-/*2*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDHN", &a::LDHN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDLN", &a::LDLN, &a::IMM, 2}, NOP_INST						,
+/*2*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCH", &a::INCD, &a::IMP, 1}, NOP_INST						, {"LDHN", &a::LDHN, &a::IMM, 2}, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"LDLN", &a::LDLN, &a::IMM, 2}, NOP_INST						,
 /*3*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, {"INCA", &a::INCA, &a::IMP, 1}, NOP_INST						, {"LDAN", &a::LDAN, &a::IMM, 2}, NOP_INST						,
 /*4*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
 /*5*/	NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						, NOP_INST						,
@@ -159,6 +159,19 @@ uint8_t z80CPU::INCA() {
 	if ((A & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
 }
 
+uint8_t z80CPU::INCB() {
+	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
+	if (B == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
+	B++;
+	
+	//S is set if result is negative; otherwise, it is reset.
+	if (B < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
+	//Z is set if result is 0; otherwise, it is reset.
+	if (B == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
+	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
+	if ((B & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+}
+
 uint8_t z80CPU::INCC() {
 	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
 	if (C == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
@@ -186,6 +199,19 @@ uint8_t z80CPU::INCD() {
 	if ((D & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
 }
 
+
+uint8_t z80CPU::INCH() {
+	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
+	if (H == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
+	H++;
+	
+	//S is set if result is negative; otherwise, it is reset.
+	if (H < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
+	//Z is set if result is 0; otherwise, it is reset.
+	if (H == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
+	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
+	if ((H & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+}
 
 uint8_t z80CPU::DJNZ() {
 	B--;
