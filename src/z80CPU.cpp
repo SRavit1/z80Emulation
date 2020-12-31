@@ -117,6 +117,17 @@ uint8_t z80CPU::NOP() {
 
 }
 
+uint8_t z80CPU::DJNZ() {
+	B--;
+
+	if (B != 0x00) {
+		// program counter is incremented once more after this instruction in executeCycle()
+		PC += (int8_t) operand1;
+		// if B is not 0, 3 cycles are taken rather than 2
+		nCycles++;
+	}
+}
+
 uint8_t z80CPU::LDAN() {
 	A = operand1;
 }
@@ -145,58 +156,46 @@ uint8_t z80CPU::LDLN() {
 	L = operand1;
 }
 
-uint8_t z80CPU::INCA() {
+uint8_t z80CPU::INCr(REG8& r) {
 	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
-	if (A == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
+	if (r == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
 	
-	A++;
-	
+	r++;
+
 	//S is set if result is negative; otherwise, it is reset.
-	if (A < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
+	if (r > 0x7F) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
 	//Z is set if result is 0; otherwise, it is reset.
-	if (A == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
+	if (r == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
 	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
-	if ((A & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+	if ((r & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+}
+
+uint8_t z80CPU::INCA() {
+	return INCr(A);
 }
 
 uint8_t z80CPU::INCB() {
-	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
-	if (B == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
-	B++;
-	
-	//S is set if result is negative; otherwise, it is reset.
-	if (B < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
-	//Z is set if result is 0; otherwise, it is reset.
-	if (B == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
-	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
-	if ((B & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+	return INCr(B);
 }
 
 uint8_t z80CPU::INCC() {
-	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
-	if (C == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
-	
-	C++;
-	
-	//S is set if result is negative; otherwise, it is reset.
-	if (C < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
-	//Z is set if result is 0; otherwise, it is reset.
-	if (C == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
-	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
-	if ((C & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+	return INCr(C);
 }
 
 uint8_t z80CPU::INCD() {
-	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
-	if (D == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
-	D++;
-	
-	//S is set if result is negative; otherwise, it is reset.
-	if (D < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
-	//Z is set if result is 0; otherwise, it is reset.
-	if (D == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
-	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
-	if ((D & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+	return INCr(D);
+}
+
+uint8_t z80CPU::INCE() {
+	return INCr(E);
+}
+
+uint8_t z80CPU::INCH() {
+	return INCr(H);
+}
+
+uint8_t z80CPU::INCL() {
+	return INCr(L);
 }
 
 uint8_t z80CPU::INCHL() {
@@ -219,56 +218,4 @@ uint8_t z80CPU::INCHL() {
 	if ((result & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
 	//N is reset
 	RESET_FLAG(FL.N);
-}
-
-uint8_t z80CPU::INCE() {
-	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
-	if (E == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
-	E++;
-	
-	//S is set if result is negative; otherwise, it is reset.
-	if (E < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
-	//Z is set if result is 0; otherwise, it is reset.
-	if (E == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
-	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
-	if ((E & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
-}
-
-
-uint8_t z80CPU::INCH() {
-	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
-	if (H == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
-	H++;
-	
-	//S is set if result is negative; otherwise, it is reset.
-	if (H < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
-	//Z is set if result is 0; otherwise, it is reset.
-	if (H == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
-	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
-	if ((H & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
-}
-
-uint8_t z80CPU::INCL() {
-	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
-	if (L == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
-	L++;
-	
-	//S is set if result is negative; otherwise, it is reset.
-	if (L < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
-	//Z is set if result is 0; otherwise, it is reset.
-	if (L == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
-	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
-	if ((L & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
-}
-
-
-uint8_t z80CPU::DJNZ() {
-	B--;
-
-	if (B != 0x00) {
-		// program counter is incremented once more after this instruction in executeCycle()
-		PC += (int8_t) operand1;
-		// if B is not 0, 3 cycles are taken rather than 2
-		nCycles++;
-	}
 }
