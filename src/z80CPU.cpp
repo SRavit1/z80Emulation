@@ -243,21 +243,6 @@ uint8_t z80CPU::INCL() {
 }
 
 
-uint8_t z80CPU::DECB() {
-	//P/V is set if r was 7Fh before operation; otherwise, it is reset.
-	if (B == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
-	
-	B--;
-	
-	//S is set if result is negative; otherwise, it is reset.
-	if (B < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
-	//Z is set if result is 0; otherwise, it is reset.
-	if (C == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
-	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
-	if ((C & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
-}
-
-
 uint8_t z80CPU::DJNZ() {
 	B--;
 
