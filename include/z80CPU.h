@@ -72,7 +72,7 @@ private:
 	
 	//NOP and IMP are dummy functions to be replaced with the instruction/address mode functions
 	//ADDRESS MODE IMPLEMENTATIONS
-	uint8_t IMP();  uint8_t IMM();  
+	uint8_t IMP();  uint8_t IMM(); uint8_t IMM_EXT();
 	
 	//INSTRUCTION HELPER FUNCTIONS
 	uint8_t INCr(REG8& r);
@@ -82,7 +82,7 @@ private:
 	
 	uint8_t DJNZ(); uint8_t INCA(); uint8_t INCB(); uint8_t INCC(); 
 	uint8_t INCD(); uint8_t INCE(); uint8_t INCH(); uint8_t INCL();
-	uint8_t INCHL();
+	uint8_t INCHL();uint8_t xIXx(); uint8_t xIYx();
 	uint8_t LDAN(); uint8_t LDBN(); uint8_t LDCN();  uint8_t LDDN(); 
 	uint8_t LDEN(); uint8_t LDHN(); uint8_t LDLN();
 };

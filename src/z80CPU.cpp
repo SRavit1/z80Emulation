@@ -112,6 +112,13 @@ uint8_t z80CPU::IMM() {
 	operand1 = memReadPC();
 }
 
+uint8_t z80CPU::IMM_EXT() {
+	PC++;
+	operand1 = memReadPC();
+	PC++;
+	operand2 = memReadPC();
+}
+
 //IMPLEMENTATION OF INSTRUCTION FUNCTIONS
 uint8_t z80CPU::NOP() {
 
@@ -211,11 +218,44 @@ uint8_t z80CPU::INCHL() {
 	m_bus->m_mem->write(addr, ++result);
 
 	//S is set if result is negative; otherwise, it is reset.
-	if (result < 0x80) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
+	if (result < 0x7F) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
 	//Z is set if result is 0; otherwise, it is reset.
 	if (result == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
 	//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
 	if ((result & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
 	//N is reset
 	RESET_FLAG(FL.N);
+}
+
+//Composite of distinct instructions (e.g. INC (IX + d))
+uint8_t z80CPU::xIXx() {
+	switch(operand1) {
+		case 0x34: //INC (IX+d)
+		{
+			uint16_t addr = IX + operand2;
+			
+			uint8_t result = 0;
+			m_bus->m_mem->read(addr, result);
+
+			//P/V is set if r was 7Fh before operation; otherwise, it is reset.
+			if (result == 0x7F) { SET_FLAG(FL.P_V); } else { RESET_FLAG(FL.P_V); }
+
+			m_bus->m_mem->write(addr, ++result);
+
+			//S is set if result is negative; otherwise, it is reset.
+			if (result < 0x7F) { SET_FLAG(FL.S); } else { RESET_FLAG(FL.S); }
+			//Z is set if result is 0; otherwise, it is reset.
+			if (result == 0x00) { SET_FLAG(FL.Z); } else { RESET_FLAG(FL.Z); }
+			//H is set if carry from bit 3 (AKA if last 3 bits are now 0); otherwise, it is reset.
+			if ((result & 0b00000111) == 0x000) { SET_FLAG(FL.H); } else { RESET_FLAG(FL.H); }
+			//N is reset
+			RESET_FLAG(FL.N);
+
+			break;
+		}
+	}
+}
+
+uint8_t z80CPU::xIYx() {
+
 }
