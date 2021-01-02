@@ -19,12 +19,6 @@ public:
 
 	dataBus();
 
-	uint8_t readData();
-	void writeData(uint8_t data);
-
-	uint16_t readAddress();
-	void writeAddress(uint16_t address);
-
 	void connectToBus(z80CPU* cpu);
 	void connectToBus(memory* mem);
 	void connectToBus(module* mod);
