@@ -75,14 +75,26 @@ private:
 	uint8_t IMP();  uint8_t IMM(); uint8_t IMM_EXT();
 	
 	//INSTRUCTION HELPER FUNCTIONS
-	uint8_t INCr(REG8& r);
+	uint8_t ADDr(REG8& r); uint8_t INCr(REG8& r); uint8_t DECr(REG8& r);
 
 	//INSTRUCTIONS IMPLEMENTATIONS (ALPHABETICAL)
 	uint8_t NOP(); 
 	
-	uint8_t DJNZ(); uint8_t INCA(); uint8_t INCB(); uint8_t INCC(); 
+	uint8_t ADDB(); uint8_t ADDC(); uint8_t ADDD(); uint8_t ADDE();
+	uint8_t ADDH(); uint8_t ADDL();
+	
+	uint8_t DECA(); uint8_t DECB(); uint8_t DECC();
+	uint8_t DECD(); uint8_t DECE(); uint8_t DECH(); uint8_t DECL();
+	uint8_t DECHL();
+	
+	uint8_t DJNZ();
+
+	uint8_t INCA(); uint8_t INCB(); uint8_t INCC(); 
 	uint8_t INCD(); uint8_t INCE(); uint8_t INCH(); uint8_t INCL();
-	uint8_t INCHL();uint8_t xIXx(); uint8_t xIYx();
+	uint8_t INCHL();
+	
+	uint8_t xIXx(); uint8_t xIYx();
+	
 	uint8_t LDAN(); uint8_t LDBN(); uint8_t LDCN();  uint8_t LDDN(); 
 	uint8_t LDEN(); uint8_t LDHN(); uint8_t LDLN();
 };
